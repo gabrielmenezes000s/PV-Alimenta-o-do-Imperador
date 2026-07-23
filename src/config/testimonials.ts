@@ -63,6 +63,20 @@ export const videoTestimonials: VideoTestimonial[] = [
     videoProvider: "local",
     orientation: "vertical",
   },
+  {
+    id: "junior",
+    tutorName: "Junior",
+    city: "Jeremoabo/BA",
+    dogName: null,
+    breed: null,
+    dogAge: null,
+    timeUsingMethod: null,
+    summary: null,
+    thumbnailSrc: "/images/testimonials/junior-poster.jpg",
+    videoSrc: "/videos/testimonials/junior.mp4",
+    videoProvider: "local",
+    orientation: "vertical",
+  },
 ];
 
 // Dados de exemplo (placeholder), usados apenas em desenvolvimento para visualizar o layout.
