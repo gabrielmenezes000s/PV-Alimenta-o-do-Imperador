@@ -1,0 +1,177 @@
+@import "tailwindcss";
+
+:root {
+  --background: #0e0c0a;
+  --foreground: #f4ede0;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-display: var(--font-cinzel);
+  --font-sans: var(--font-inter);
+
+  /* Paleta "Império" — pedra/carvão/vinho/dourado, inspirada em Roma Antiga */
+  --color-carvao: #14110f;
+  --color-carvao-800: #1b1713;
+  --color-grafite: #23201c;
+  --color-grafite-700: #2d2822;
+  --color-vinho: #6e1423;
+  --color-vinho-600: #85192b;
+  --color-vinho-900: #400c15;
+  --color-dourado: #c9a24b;
+  --color-dourado-300: #ddc07d;
+  --color-dourado-600: #a3812f;
+  --color-pedra: #e8dfc9;
+  --color-pedra-100: #f4ede0;
+  --color-bronze: #8c5a2b;
+  --color-cinza-romano: #6b6862;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background: #f4ede0;
+    --foreground: #14110f;
+  }
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  background: var(--color-carvao);
+  color: var(--color-pedra-100);
+  font-family: var(--font-sans);
+}
+
+/* Trava de segurança contra rolagem lateral no mobile.
+   `clip` em vez de `hidden` de propósito: `overflow-x: hidden` transforma o body em contêiner
+   de rolagem e quebra o `position: sticky` do header. */
+html,
+body {
+  overflow-x: clip;
+  max-width: 100%;
+}
+
+::selection {
+  background: var(--color-dourado);
+  color: var(--color-carvao);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.text-gradient-gold {
+  background: linear-gradient(90deg, #ddc07d 0%, #c9a24b 45%, #8c5a2b 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.border-gold-line {
+  border-image: linear-gradient(90deg, transparent, #c9a24b, transparent) 1;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-visible {
+    animation: reveal-in 0.6s ease-out forwards;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes reveal-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .float-badge {
+    animation: float-badge 4.5s ease-in-out infinite;
+  }
+
+  .float-badge-delayed {
+    animation: float-badge 4.5s ease-in-out infinite;
+    animation-delay: 0.6s;
+  }
+}
+
+@keyframes float-badge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Pulso suave dos botões de CTA. Fica em @media para não animar para quem pediu menos
+   movimento no sistema; o hover do próprio botão continua funcionando nos dois casos. */
+@media (prefers-reduced-motion: no-preference) {
+  .cta-pulse,
+  .cta-pulse-green {
+    animation: cta-pulse-gold 2.4s ease-in-out infinite;
+  }
+
+  /* O botão de checkout pulsa em verde para se destacar como a ação final de compra. */
+  .cta-pulse-green {
+    animation-name: cta-pulse-green;
+  }
+
+  /* `animation: none` e não `paused`: enquanto a animação existir ela controla o `transform`
+     e o efeito de hover do botão (translate) não teria efeito. */
+  .cta-pulse:hover,
+  .cta-pulse-green:hover {
+    animation: none;
+  }
+}
+
+/* Brilho dourado — usado pela maioria dos CTAs (tone="gold"). */
+@keyframes cta-pulse-gold {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 30px -8px rgba(201, 162, 75, 0.55);
+  }
+  50% {
+    transform: scale(1.025);
+    box-shadow: 0 12px 38px -6px rgba(221, 192, 125, 0.85);
+  }
+}
+
+/* Brilho verde — reservado para o botão de checkout (tone="green"). */
+@keyframes cta-pulse-green {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 8px 30px -8px rgba(16, 185, 129, 0.55);
+  }
+  50% {
+    transform: scale(1.025);
+    box-shadow: 0 12px 38px -6px rgba(16, 185, 129, 0.85);
+  }
+}
