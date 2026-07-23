@@ -58,7 +58,20 @@ export function VideoTestimonials() {
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-gradient-to-br from-grafite-700 to-carvao">
-                {testimonial.videoSrc && testimonial.videoProvider === "local" ? (
+                {/* Capa via imagem (poster) — o iOS Safari não pinta o primeiro quadro de um
+                    <video preload="metadata">, então a capa só aparecia no desktop. A imagem
+                    resolve em todo dispositivo e ainda evita baixar o vídeo só para a miniatura.
+                    Fallback para o <video> caso algum depoimento não tenha poster gerado. */}
+                {testimonial.thumbnailSrc ? (
+                  <Image
+                    src={testimonial.thumbnailSrc}
+                    alt=""
+                    aria-hidden="true"
+                    fill
+                    sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+                    className="object-cover"
+                  />
+                ) : testimonial.videoSrc && testimonial.videoProvider === "local" ? (
                   <video
                     src={testimonial.videoSrc}
                     muted
