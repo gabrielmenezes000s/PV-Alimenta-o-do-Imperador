@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { AnchorHTMLAttributes } from "react";
-import { trackEvent, type AnalyticsEvent } from "@/lib/analytics";
+import { trackEvent, trackMetaEvent, type AnalyticsEvent } from "@/lib/analytics";
 
 type PrimaryButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href: string;
@@ -13,6 +13,9 @@ type PrimaryButtonProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   size?: "md" | "lg";
   trackAs?: AnalyticsEvent;
   trackPayload?: Record<string, unknown>;
+  // Evento padrão do Meta (Pixel + Conversions API) a disparar junto, ex.: "InitiateCheckout".
+  // Só o CheckoutButton usa isso — os demais CTAs só rolam até a oferta, sem intenção de compra.
+  trackMeta?: { name: string; customData?: Record<string, unknown> };
 };
 
 export function PrimaryButton({
@@ -22,6 +25,7 @@ export function PrimaryButton({
   size = "lg",
   trackAs,
   trackPayload,
+  trackMeta,
   className = "",
   children,
   ...props
@@ -49,6 +53,7 @@ export function PrimaryButton({
       className={`${base} ${sizes} ${variants} ${className}`}
       onClick={(event) => {
         if (trackAs) trackEvent(trackAs, trackPayload);
+        if (trackMeta) trackMetaEvent(trackMeta.name, { customData: trackMeta.customData });
         if (isHashLink) {
           const target = document.getElementById(href.slice(1));
           if (target) {

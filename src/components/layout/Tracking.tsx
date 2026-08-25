@@ -42,7 +42,32 @@ export function Tracking() {
             t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
             document,'script','https://connect.facebook.net/en_US/fbevents.js');
             fbq('init', '${META_PIXEL_ID}');
-            fbq('track', 'PageView');
+            (function() {
+              // event_id compartilhado entre o Pixel (navegador) e a Conversions API (servidor,
+              // ver /api/capi) — a Meta deduplica os dois automaticamente por event_name+event_id.
+              var eventId = (window.crypto && window.crypto.randomUUID)
+                ? window.crypto.randomUUID()
+                : String(Date.now()) + '-' + Math.random();
+              fbq('track', 'PageView', {}, { eventID: eventId });
+
+              function readCookie(name) {
+                var match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+                return match ? decodeURIComponent(match[1]) : undefined;
+              }
+
+              fetch('/api/capi', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  eventName: 'PageView',
+                  eventId: eventId,
+                  eventSourceUrl: window.location.href,
+                  fbp: readCookie('_fbp'),
+                  fbc: readCookie('_fbc'),
+                }),
+                keepalive: true,
+              }).catch(function() {});
+            })();
           `}
         </Script>
       ) : null}

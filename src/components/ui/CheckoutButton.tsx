@@ -16,7 +16,9 @@ type CheckoutButtonProps = {
 };
 
 // CTA de compra — sempre aponta para productConfig.checkoutUrl, preservando UTM/fbclid da URL
-// da página quando o checkout for um link externo real (ver src/lib/checkout.ts).
+// da página quando o checkout for um link externo real (ver src/lib/checkout.ts). É o único botão
+// que representa intenção real de compra, então também dispara o evento padrão "InitiateCheckout"
+// do Meta (Pixel + Conversions API) — ver trackMeta em PrimaryButton e src/lib/analytics.ts.
 export function CheckoutButton({ children, ...props }: CheckoutButtonProps) {
   const [href, setHref] = useState(productConfig.checkoutUrl);
 
@@ -29,7 +31,19 @@ export function CheckoutButton({ children, ...props }: CheckoutButtonProps) {
 
   return (
     // tone="green": único botão verde da página — a ação final de compra que leva ao checkout.
-    <PrimaryButton href={href} tone="green" {...props}>
+    <PrimaryButton
+      href={href}
+      tone="green"
+      trackMeta={{
+        name: "InitiateCheckout",
+        customData: {
+          value: productConfig.priceValue,
+          currency: productConfig.currency,
+          content_name: productConfig.productName,
+        },
+      }}
+      {...props}
+    >
       {children}
     </PrimaryButton>
   );
